@@ -12,7 +12,7 @@ char matrix[9][9];
 char buffer[9][9];
 
 int printNotValid(char *array, int type, int errorLocation);
-int check(char *array);
+int check(char **array,int item);
 void* verticalCheck();
 void* horizontalCheck();
 void* blockCheck();
@@ -43,10 +43,13 @@ int main(int argc, char *argv[]) {
 	}
 
 	pthread_t thr[9];
-	int k;
-	for (k = 0; k < 9; k++) {
-		pthread_create(&thr[k], NULL, totalCheck(), &k);
-	}
+	int id[9], k;
+
+	  for (k = 0; k < 9; k++) {
+	    id[k] = k;
+	    pthread_create(&thr[k], NULL, totalCheck, &id[k]);
+	  }
+
 	for (k = 0; k < 9; k++) {
 		pthread_join(&thr[k], NULL);
 	}
@@ -77,12 +80,12 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
-int check(char *array) {
+int check(char **array, int item) {
 	int i, count;
 	for (i = 0; i < 9; i++) {
 		count = i;
 		while (count < 9) {
-			if (array[i] == array[++count])
+			if (array[item][i] == array[item][++count])
 				return 1;
 		}
 	}
@@ -92,42 +95,39 @@ int check(char *array) {
 void* totalCheck(void* item) {
 
 	int aux =*(int*) item;
-	verticalCheck(item);
-	cleanBuffer(item);
-	horizontalCheck(item);
-	cleanBuffer(item);
-	blockCheck(item);
-	cleanBuffer(item);
+	verticalCheck(aux);
+	horizontalCheck(aux);
+	blockCheck(aux);
 }
 
-void* cleanBuffer(void* item) {
+void* cleanBuffer(int item) {
 
 	int i;
 	for (i = 0; i < 9; i++) {
-		buffer[(int)item][i] = 'x';
+		buffer[item][i] = 'x';
 	}
 }
 
-void* verticalCheck(void* item) {
+void* verticalCheck(int item) {
 	int i, j;
 	/* Vertical check */
 	for (j = 0; j < 9; j++) {
-		buffer[(int) item][j] = matrix[(int) item][j];
+		buffer[item][j] = matrix[ item][j];
 
-		if (check(buffer) != 0) {
+		if (check(buffer,item) != 0) {
 			printNotValid(buffer, VERTICAL_CHECK, j+1);
 			flag = 1;
 		}
 	}
 }
 
-void* horizontalCheck(void* item) {
+void* horizontalCheck(int item) {
 	int i, j;
 	/* Horizontal check */
 	for (i = 0; i < 9; i++) {
-		buffer[*(int*) item][j] = matrix[i][*(int*) item];
+		buffer[item][j] = matrix[i][item];
 
-		if (check(buffer) != 0) {
+		if (check(buffer,item) != 0) {
 			printNotValid(buffer, HORIZONTAL_CHECK, i+1);
 			flag = 1;
 		}
@@ -135,7 +135,7 @@ void* horizontalCheck(void* item) {
 
 }
 
-void* blockCheck(void* item) {
+void* blockCheck(int item) {
 	/* Submatrix check */
 	int count = 0;
 	int icount = 0;
@@ -153,7 +153,7 @@ void* blockCheck(void* item) {
 			}
 
 			++matcount;
-			if (check(buffer) != 0) {
+			if (check(buffer,item) != 0) {
 				printNotValid(buffer, SUBMATIX_CHECK, matcount);
 				flag = 1;
 			}
