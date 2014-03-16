@@ -147,7 +147,7 @@ void* blockCheck(int item) {
 		for (j = 0; j <= 6; j += 3) {
 			for (icount = 0, count = 0; icount < 3; icount++) {
 				for (jcount = 0; jcount < 3; jcount++) {
-					buffer[(int)item][count++] = matrix[i + icount][j + jcount];
+					buffer[item][count++] = matrix[i + icount][j + jcount];
 				}
 
 			}
