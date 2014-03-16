@@ -9,11 +9,10 @@
 
 int flag = 0; /* 1 - Error, 0 - Success */
 char matrix[9][9];
-char buffer[9];
+char buffer[9][9];
 
 int printNotValid(char *array, int type, int errorLocation);
 int check(char *array);
-void printUsage();
 void* verticalCheck();
 void* horizontalCheck();
 void* blockCheck();
@@ -28,14 +27,6 @@ int main(int argc, char *argv[]) {
 	} else
 		data = fopen(argv[1], "r");
 
-	pthread_t thr[9];
-	int k;
-	for (k = 0; k < 9; k++) {
-		pthread_create(&thr[k], NULL, totalCheck(), &k);
-	}
-	for (k = 0; k < 9; k++) {
-		pthread_join(&thr[k], NULL);
-	}
 
 	/* Reading the Matrix from file */
 	int c;
@@ -49,6 +40,15 @@ int main(int argc, char *argv[]) {
 			j++;
 		} else
 			matrix[j][i++] = c;
+	}
+
+	pthread_t thr[9];
+	int k;
+	for (k = 0; k < 9; k++) {
+		pthread_create(&thr[k], NULL, totalCheck(), &k);
+	}
+	for (k = 0; k < 9; k++) {
+		pthread_join(&thr[k], NULL);
 	}
 
 	/* Printing the matrix */
@@ -90,16 +90,21 @@ int check(char *array) {
 }
 
 void* totalCheck(void* item) {
+
+	int aux =*(int*) item;
 	verticalCheck(item);
+	cleanBuffer(item);
 	horizontalCheck(item);
+	cleanBuffer(item);
 	blockCheck(item);
+	cleanBuffer(item);
 }
 
-void* cleanBuffer() {
+void* cleanBuffer(void* item) {
 
 	int i;
 	for (i = 0; i < 9; i++) {
-		buffer[i] = 'x';
+		buffer[(int)item][i] = 'x';
 	}
 }
 
@@ -107,7 +112,7 @@ void* verticalCheck(void* item) {
 	int i, j;
 	/* Vertical check */
 	for (j = 0; j < 9; j++) {
-		buffer[i] = matrix[*(char*) item][j];
+		buffer[(int) item][j] = matrix[(int) item][j];
 
 		if (check(buffer) != 0) {
 			printNotValid(buffer, VERTICAL_CHECK, j+1);
@@ -120,7 +125,7 @@ void* horizontalCheck(void* item) {
 	int i, j;
 	/* Horizontal check */
 	for (i = 0; i < 9; i++) {
-		buffer[j] = matrix[i][*(char*) item];
+		buffer[*(int*) item][j] = matrix[i][*(int*) item];
 
 		if (check(buffer) != 0) {
 			printNotValid(buffer, HORIZONTAL_CHECK, i+1);
@@ -142,7 +147,7 @@ void* blockCheck(void* item) {
 		for (j = 0; j <= 6; j += 3) {
 			for (icount = 0, count = 0; icount < 3; icount++) {
 				for (jcount = 0; jcount < 3; jcount++) {
-					buffer[count++] = matrix[i + icount][j + jcount];
+					buffer[(int)item][count++] = matrix[i + icount][j + jcount];
 				}
 
 			}
