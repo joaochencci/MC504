@@ -19,9 +19,9 @@ int main(){
 
   Parameter p;
   int i, j, k; //Contadores. i-linha, j-coluna, k-count
-  
+
   pthread_t thr[27];
-  
+
   printf("Entre com a Matriz:\n");
   //LEITURA DA MATRIZ
   for(i=0; i<9; i++){
@@ -36,27 +36,27 @@ int main(){
     pthread_create(&thr[k+9], NULL, verticalCheck, (void*) &p);
     pthread_create(&thr[k+18], NULL, submatrixCheck, (void*) &p);
   }
-  
+
   for(k=0; k<27; k++){
     pthread_join(thr[k], NULL);
   }
-  
+
   //SE SUDOKU NAO TEM ERROS
   if(totalErrors==0){
     printf("O Sudoku esta correto.\n");
   }
-  
+
   return 0;
 
 };
 
 void* horizontalCheck(void *param){
-  
+
   Parameter p = *(Parameter*)param;
-  
+
   int a, b;
   int cnt=0;
-  
+
   for(a=0; a<9; a++){
     cnt++; //Checa apenas numeros que ainda nao foram checados
     for(b=cnt; b<9; b++){
@@ -67,20 +67,20 @@ void* horizontalCheck(void *param){
       }
     }
   }
-  
+
   //printf("Thr: %d\n", p.value); //DEBUG
-  
+
   return NULL;
-  
+
 };
 
 void* verticalCheck(void *param){
-  
+
   Parameter p = *(Parameter*)param;
-  
+
   int a, b;
   int cnt=0;
-  
+
   for(a=0; a<9; a++){
     cnt++; //Checa apenas numeros que ainda nao foram checados
     for(b=cnt; b<9; b++){
@@ -91,30 +91,30 @@ void* verticalCheck(void *param){
       }
     }
   }
-  
+
   //printf("Thr: %d\n", p.value+9); //DEBUG
-  
+
   return NULL;
-  
+
 };
 
 void* submatrixCheck(void *param){
-  
+
   Parameter p = *(Parameter*)param;
-  
+
   int a, b;
   int cnt = 0;
-  
+
   int i, j, k=0;
   int buffer[9];
-  
+
   //Passa submatriz para um buffer (vetor)
   for(i=p.value-(p.value%3); i<p.value-(p.value%3)+3; i++){
     for(j=(p.value%3)*3; j<(p.value%3)*3+3; j++){
       buffer[k++] = p.matrix[i][j];
     }
   }
-  
+
   for(a=0; a<9; a++){
     cnt++; //Checa apenas numeros que ainda nao foram checados
     for(b=cnt; b<9; b++){
@@ -125,8 +125,8 @@ void* submatrixCheck(void *param){
       }
     }
   }
-  
+
   //printf("Thr: %d\n", p.value); //DEBUG
-  
+
   return NULL;
 }
