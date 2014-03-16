@@ -22,6 +22,7 @@ void* f_thread(void *v) {
   sleep(1);
   thr_id = (int) v;
   printf("Thread %d.\n", thr_id);
+  printf("Jo‹o!");
   return NULL;
 }
 
