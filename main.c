@@ -18,6 +18,7 @@ void* verticalCheck();
 void* horizontalCheck();
 void* blockCheck();
 void* cleanBuffer();
+void* totalCheck();
 
 int main(int argc, char *argv[]) {
 	FILE *data;
@@ -30,7 +31,7 @@ int main(int argc, char *argv[]) {
 	pthread_t thr[9];
 	int k;
 	for (k = 0; k < 9; k++) {
-		pthread_create(&thr[k], NULL, verticalCheck(), &k);
+		pthread_create(&thr[k], NULL, totalCheck(), &k);
 	}
 	for (k = 0; k < 9; k++) {
 		pthread_join(&thr[k], NULL);
@@ -49,9 +50,6 @@ int main(int argc, char *argv[]) {
 		} else
 			matrix[j][i++] = c;
 	}
-	verticalCheck();
-	horizontalCheck();
-	blockCheck();
 
 	/* Printing the matrix */
 	printf("\n -- sudoku -- \n");
@@ -92,12 +90,9 @@ int check(char *array) {
 }
 
 void* totalCheck(void* item) {
-	verticalCheck();
-	cleanBuffer();
-	horizontalCheck();
-	cleanBuffer();
-	blockCheck();
-	cleanBuffer();
+	verticalCheck(item);
+	horizontalCheck(item);
+	blockCheck(item);
 }
 
 void* cleanBuffer() {
@@ -115,7 +110,7 @@ void* verticalCheck(void* item) {
 		buffer[i] = matrix[*(char*) item][j];
 
 		if (check(buffer) != 0) {
-			printNotValid(buffer, VERTICAL_CHECK, j);
+			printNotValid(buffer, VERTICAL_CHECK, j+1);
 			flag = 1;
 		}
 	}
@@ -128,7 +123,7 @@ void* horizontalCheck(void* item) {
 		buffer[j] = matrix[i][*(char*) item];
 
 		if (check(buffer) != 0) {
-			printNotValid(buffer, HORIZONTAL_CHECK, i);
+			printNotValid(buffer, HORIZONTAL_CHECK, i+1);
 			flag = 1;
 		}
 	}
