@@ -1,14 +1,12 @@
 /*
- * main.c
+ * Projeto 01 - MC504 - 1s2014
  *
- *  Created on: 15/03/2014
- *      Author: Guilherme
- */
+ * Andr� Seiji Tamanaha			116134
+ * Guilherme Costa Zanelato		119494
+ * Jo�o Victor Chencci Marques	119637
+ *
+ * */
 
-
-/*
- * Passagem de parÃ¢metros para a thread. Cada thread terÃ¡ um identificador Ãºnico!
- */
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,8 +27,6 @@ void* f_thread(void *v) {
 
 
 int main() {
-
-
   pthread_t thr[N_THR];
   int i;
 
