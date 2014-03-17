@@ -8,7 +8,7 @@ mesmo ainda não tendo necessariamente terminada a validação do grupo 1. Assim, n
 Essa é uma abordagem interessante pois podemos validar diversas partes da matriz que dependem de diferentes regras de validação de forma concorrente, sem utilizar um número
 absurdo de threads e agilizando o processamento.
 
-O segundo módulo foi implementado para, dado um tabuleiro de Sudoku 9x9 com X's, BLABLABLA
+O segundo módulo foi implementado para, dado um tabuleiro de Sudoku 9x9 com X's, disponibilizar as opções válidas para cada campo contendo um X. Uma função foi criada para detectar essas opções, chamada "findClues". Como o objetivo é analisar cada célula da matriz, executamos 81 threads paralelizando as buscas pelas opções. A função verifica se existe um X, e caso exista, preenche a saída com todas as opções, iterando nas linhas, colunas e submatrizes de modo a retirar opções invalidas substituindo pelo caracter N. Na impressão, removemos todas as referências do caracter N, restando apenas as opções válidas para cada uma das células. A escolha das 81 threads teve como objetivo otimizar a identificação das opções em cada uma das células da matriz completa em paralelo, sem que haja problemas de concorrência. Considerando que as células que não estão marcadas com X tem seu processamento bem rápido, isso ameniza o fato de termos uma alta quantidade de threads simultâneas.
 
 O terceiro módulo não foi terminado, apesar de boa parte do código estar feita. O objetivo do modulo sudoku.c é, a partir de uma entrada com alguns números faltantes de um
 tabuleiro 9x9 de Sudoku (representados pelo caracter 'X'), ele retornar para o usuário o Sudoku resolvido. O algoritmo pensado foi utilizar o segundo módulo para encontrar
